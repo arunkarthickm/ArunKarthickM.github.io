@@ -22293,7 +22293,7 @@ delay: 0
 function BlockUrlMasking() {
 if ( !$.isNumeric($('#w').val()) && packageNUM < '2' ) {
 if ( window.location != window.parent.location ) {
-topWindow.location = 'http://'+domain+'.'+subDomainUrl;
+topWindow.location = 'https://'+domain+'.'+subDomainUrl;
 }
 }
 }
