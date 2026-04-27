@@ -1,12 +1,768 @@
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Arun Karthick Manickam — Engineering @ Meta</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --bg2: #111118;
+    --gold: #c9a84c;
+    --gold-light: #e8c97a;
+    --white: #f2ede4;
+    --muted: #7a7a8a;
+    --border: rgba(201,168,76,0.15);
+    --card: rgba(255,255,255,0.03);
+  }
 
-<BODY>
-	<!-- Mirror and index made by HTTrack Website Copier/3.49-2 [XR&CO'2014] -->
-	<!-- Thanks for using HTTrack Website Copier! -->
-	<meta HTTP-EQUIV="Refresh" CONTENT="0; URL=arunkarthickm/index.html">
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--white);
+    font-family: 'Syne', sans-serif;
+    font-weight: 400;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* ── Custom cursor ── */
+  .cursor {
+    position: fixed; top: 0; left: 0; pointer-events: none; z-index: 9999;
+  }
+  .cursor-dot {
+    width: 6px; height: 6px;
+    background: var(--gold);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: transform 0.1s;
+  }
+  .cursor-ring {
+    width: 36px; height: 36px;
+    border: 1px solid rgba(201,168,76,0.4);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: transform 0.18s ease, width 0.3s, height 0.3s, border-color 0.3s;
+  }
+  body:has(a:hover) .cursor-ring,
+  body:has(button:hover) .cursor-ring {
+    width: 52px; height: 52px;
+    border-color: var(--gold);
+  }
+
+  /* ── Noise overlay ── */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+    opacity: 0.03;
+    pointer-events: none;
+    z-index: 9998;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.4rem 4rem;
+    background: linear-gradient(to bottom, rgba(10,10,15,0.98), transparent);
+    backdrop-filter: blur(2px);
+  }
+  .nav-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.5rem; font-weight: 300; letter-spacing: 0.08em;
+    color: var(--white); text-decoration: none;
+  }
+  .nav-logo span { color: var(--gold); }
+  .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+  .nav-links a {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--muted); text-decoration: none;
+    transition: color 0.3s;
+  }
+  .nav-links a:hover { color: var(--gold); }
+
+  /* ── HERO ── */
+  #hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column; justify-content: flex-end;
+    padding: 0 4rem 6rem;
+    position: relative; overflow: hidden;
+  }
+  .hero-bg {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 60% 40%, rgba(201,168,76,0.06) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 40% at 20% 80%, rgba(100,80,200,0.04) 0%, transparent 60%);
+  }
+  .hero-grid {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(201,168,76,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(201,168,76,0.04) 1px, transparent 1px);
+    background-size: 80px 80px;
+    mask-image: radial-gradient(ellipse at center, black 30%, transparent 80%);
+  }
+  .hero-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem; letter-spacing: 0.25em; text-transform: uppercase;
+    color: var(--gold); margin-bottom: 1.5rem;
+    opacity: 0; animation: fadeUp 0.8s 0.2s forwards;
+  }
+  .hero-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(4rem, 9vw, 9rem);
+    font-weight: 300; line-height: 0.95;
+    letter-spacing: -0.02em;
+    opacity: 0; animation: fadeUp 1s 0.4s forwards;
+  }
+  .hero-name em { font-style: italic; color: var(--gold-light); }
+  .hero-sub {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(1rem, 2vw, 1.25rem);
+    font-weight: 400; color: var(--muted);
+    margin-top: 1.5rem; max-width: 480px;
+    opacity: 0; animation: fadeUp 1s 0.7s forwards;
+  }
+  .hero-cta {
+    display: flex; gap: 1.2rem; margin-top: 3rem;
+    opacity: 0; animation: fadeUp 1s 1s forwards;
+  }
+  .btn {
+    display: inline-flex; align-items: center; gap: 0.6rem;
+    padding: 0.85rem 2rem;
+    font-family: 'DM Mono', monospace; font-size: 0.75rem;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    text-decoration: none; cursor: none;
+    transition: all 0.3s;
+  }
+  .btn-primary {
+    background: var(--gold); color: var(--bg);
+    border: 1px solid var(--gold);
+  }
+  .btn-primary:hover { background: var(--gold-light); border-color: var(--gold-light); }
+  .btn-ghost {
+    background: transparent; color: var(--white);
+    border: 1px solid rgba(255,255,255,0.15);
+  }
+  .btn-ghost:hover { border-color: var(--gold); color: var(--gold); }
+  .hero-scroll {
+    position: absolute; bottom: 3rem; right: 4rem;
+    display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
+    font-family: 'DM Mono', monospace; font-size: 0.65rem;
+    letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted);
+    opacity: 0; animation: fadeUp 1s 1.4s forwards;
+  }
+  .scroll-line {
+    width: 1px; height: 60px;
+    background: linear-gradient(to bottom, var(--gold), transparent);
+    animation: scrollPulse 2s infinite;
+  }
+
+  /* ── SECTION BASE ── */
+  section { padding: 7rem 4rem; }
+  .section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem; letter-spacing: 0.25em; text-transform: uppercase;
+    color: var(--gold); margin-bottom: 0.75rem;
+  }
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 300; line-height: 1.1;
+    margin-bottom: 3rem;
+  }
+  .section-title em { font-style: italic; color: var(--gold-light); }
+
+  /* ── ABOUT ── */
+  #about { background: var(--bg2); }
+  .about-inner {
+    display: grid; grid-template-columns: 1fr 1.5fr; gap: 6rem; align-items: start;
+  }
+  .about-stat-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 1.5px;
+    border: 1px solid var(--border); background: var(--border);
+  }
+  .stat-box {
+    background: var(--bg2); padding: 2rem 1.5rem;
+    display: flex; flex-direction: column; gap: 0.4rem;
+  }
+  .stat-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 3rem; font-weight: 600; color: var(--gold); line-height: 1;
+  }
+  .stat-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase;
+    color: var(--muted);
+  }
+  .about-text p {
+    font-size: 1.05rem; line-height: 1.8; color: rgba(242,237,228,0.75);
+    margin-bottom: 1.5rem;
+  }
+  .about-text p strong { color: var(--white); font-weight: 600; }
+  .tag-row { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 2rem; }
+  .tag {
+    font-family: 'DM Mono', monospace; font-size: 0.68rem;
+    letter-spacing: 0.1em; padding: 0.35rem 0.8rem;
+    border: 1px solid var(--border); color: var(--muted);
+    transition: all 0.3s;
+  }
+  .tag:hover { border-color: var(--gold); color: var(--gold); }
+
+  /* ── EXPERIENCE ── */
+  #experience { position: relative; }
+  .timeline { position: relative; padding-left: 2rem; }
+  .timeline::before {
+    content: ''; position: absolute; left: 0; top: 0; bottom: 0;
+    width: 1px; background: linear-gradient(to bottom, var(--gold), transparent);
+  }
+  .timeline-item {
+    position: relative; padding: 0 0 4rem 3rem;
+    opacity: 0; transform: translateX(-20px);
+    transition: all 0.6s ease;
+  }
+  .timeline-item.visible { opacity: 1; transform: translateX(0); }
+  .timeline-dot {
+    position: absolute; left: -0.4rem; top: 0.3rem;
+    width: 0.8rem; height: 0.8rem;
+    border: 1px solid var(--gold); background: var(--bg);
+    transform: rotate(45deg);
+  }
+  .timeline-dot.current { background: var(--gold); }
+  .timeline-meta {
+    display: flex; align-items: center; gap: 1rem; margin-bottom: 0.8rem;
+    flex-wrap: wrap;
+  }
+  .timeline-company {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.6rem; font-weight: 600; color: var(--gold);
+  }
+  .timeline-period {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem; letter-spacing: 0.12em; color: var(--muted);
+    padding: 0.2rem 0.6rem; border: 1px solid var(--border);
+  }
+  .timeline-role {
+    font-size: 1rem; font-weight: 600; color: var(--white);
+    margin-bottom: 0.5rem;
+  }
+  .timeline-location {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem; color: var(--muted); margin-bottom: 1rem;
+    letter-spacing: 0.1em;
+  }
+  .timeline-desc {
+    font-size: 0.92rem; line-height: 1.75; color: rgba(242,237,228,0.65);
+    max-width: 680px;
+  }
+  .timeline-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 1rem; }
+  .t-tag {
+    font-family: 'DM Mono', monospace; font-size: 0.6rem;
+    padding: 0.2rem 0.55rem; background: rgba(201,168,76,0.08);
+    color: var(--gold); letter-spacing: 0.08em;
+  }
+
+  /* ── SKILLS ── */
+  #skills { background: var(--bg2); }
+  .skills-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5px;
+    background: var(--border); border: 1px solid var(--border);
+  }
+  .skill-cell {
+    background: var(--bg2); padding: 2.5rem 2rem;
+    transition: background 0.3s;
+  }
+  .skill-cell:hover { background: rgba(201,168,76,0.04); }
+  .skill-icon { font-size: 1.5rem; margin-bottom: 1rem; }
+  .skill-name {
+    font-size: 0.95rem; font-weight: 700; margin-bottom: 0.6rem;
+    color: var(--white);
+  }
+  .skill-items {
+    font-family: 'DM Mono', monospace; font-size: 0.72rem;
+    color: var(--muted); line-height: 1.9; letter-spacing: 0.04em;
+  }
+
+  /* ── PATENTS & PUBLICATIONS ── */
+  #patents {}
+  .patents-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5px; background: var(--border); border: 1px solid var(--border); }
+  .patent-card {
+    background: var(--bg); padding: 2.5rem 2rem;
+    transition: background 0.3s; position: relative; overflow: hidden;
+  }
+  .patent-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0;
+    height: 1px; background: linear-gradient(to right, var(--gold), transparent);
+  }
+  .patent-card:hover { background: rgba(201,168,76,0.03); }
+  .patent-type {
+    font-family: 'DM Mono', monospace; font-size: 0.6rem;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--gold); margin-bottom: 0.8rem;
+  }
+  .patent-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.2rem; line-height: 1.4; color: var(--white);
+    margin-bottom: 0.75rem;
+  }
+  .patent-desc {
+    font-size: 0.82rem; line-height: 1.65; color: var(--muted);
+  }
+  .patent-link {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    margin-top: 1rem; font-family: 'DM Mono', monospace;
+    font-size: 0.65rem; letter-spacing: 0.1em;
+    color: var(--gold); text-decoration: none;
+    transition: gap 0.3s;
+  }
+  .patent-link:hover { gap: 0.7rem; }
+
+  /* ── EDUCATION ── */
+  #education {}
+  .edu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5px; background: var(--border); border: 1px solid var(--border); }
+  .edu-card {
+    background: var(--bg); padding: 2.5rem 2rem; transition: background 0.3s;
+  }
+  .edu-card:hover { background: rgba(201,168,76,0.03); }
+  .edu-degree {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.4rem; color: var(--white); margin-bottom: 0.5rem;
+  }
+  .edu-school {
+    font-size: 0.9rem; font-weight: 700; color: var(--gold); margin-bottom: 0.4rem;
+  }
+  .edu-field {
+    font-family: 'DM Mono', monospace; font-size: 0.65rem;
+    letter-spacing: 0.1em; color: var(--muted);
+  }
+
+  /* ── CONTACT ── */
+  #contact {
+    background: var(--bg2);
+    text-align: center;
+    padding: 8rem 4rem;
+  }
+  #contact .section-title { margin-bottom: 1rem; }
+  #contact p {
+    font-size: 1rem; color: var(--muted); margin-bottom: 3rem;
+  }
+  .contact-links {
+    display: flex; justify-content: center; gap: 1.5rem; flex-wrap: wrap;
+  }
+  .contact-link {
+    display: flex; align-items: center; gap: 0.7rem;
+    padding: 1rem 2rem; border: 1px solid var(--border);
+    font-family: 'DM Mono', monospace; font-size: 0.72rem;
+    letter-spacing: 0.1em; color: var(--white); text-decoration: none;
+    transition: all 0.3s;
+  }
+  .contact-link:hover { border-color: var(--gold); color: var(--gold); background: rgba(201,168,76,0.04); }
+  .contact-link svg { width: 16px; height: 16px; stroke: currentColor; fill: none; }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 2rem 4rem;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  footer p {
+    font-family: 'DM Mono', monospace; font-size: 0.65rem;
+    letter-spacing: 0.1em; color: var(--muted);
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes scrollPulse {
+    0%, 100% { opacity: 0.3; transform: scaleY(1); }
+    50% { opacity: 1; transform: scaleY(0.6); }
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    nav { padding: 1.2rem 1.5rem; }
+    .nav-links { display: none; }
+    #hero, section { padding-left: 1.5rem; padding-right: 1.5rem; }
+    .about-inner, .skills-grid, .patents-grid,
+    .book-inner, .edu-grid { grid-template-columns: 1fr; }
+    .hero-scroll { display: none; }
+    footer { flex-direction: column; gap: 0.5rem; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Cursor -->
+<div class="cursor" id="cursor">
+  <div class="cursor-ring" id="cursorRing"></div>
+  <div class="cursor-dot" id="cursorDot"></div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <a href="#hero" class="nav-logo">AK<span>.</span>M</a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#patents">Patents</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <p class="hero-eyebrow">Staff Software Engineer · Seattle, WA</p>
+  <h1 class="hero-name">
+    Arun<br>
+    <em>Karthick</em><br>
+    Manickam
+  </h1>
+  <p class="hero-sub">Building the future of Ads & AI at Meta. Ex-Googler. Innovator. Author. 10+ years shipping at scale.</p>
+  <div class="hero-cta">
+    <a href="#experience" class="btn btn-primary">View Experience</a>
+    <a href="#contact" class="btn btn-ghost">Get in Touch</a>
+  </div>
+  <div class="hero-scroll">
+    <div class="scroll-line"></div>
+    <span>Scroll</span>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <p class="section-label">01 — About</p>
+  <div class="about-inner">
+    <div>
+      <h2 class="section-title">Engineer.<br><em>Innovator.</em><br>Author.</h2>
+      <div class="about-stat-grid">
+        <div class="stat-box">
+          <span class="stat-num">10+</span>
+          <span class="stat-label">Years in Industry</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-num">3</span>
+          <span class="stat-label">Big Tech Companies</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-num">5+</span>
+          <span class="stat-label">Patents & Publications</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-num">1B+</span>
+          <span class="stat-label">Users Impacted</span>
+        </div>
+      </div>
+    </div>
+    <div class="about-text">
+      <p>
+        I'm a <strong>Staff Software Engineer</strong> at Meta leading backend engineering across Facebook Ads, Monetization, and AI/ML systems. Previously, I was a Software Engineering Team Lead at Google working on <strong>Fuchsia</strong> — Google's next-generation OS.
+      </p>
+      <p>
+        My career spans cloud-scale distributed systems, mobile platforms, AI/ML infrastructure, and full-stack product development. I've shipped products used by <strong>billions of people</strong> across Meta and Google.
+      </p>
+      <p>
+        I hold a <strong>US Patent in Machine Learning & Predictive Analytics</strong> (US10109171B1), have 5+ defensive publications in the AI/ML space, and am currently authoring a technical book on <strong>Distributed Systems with C++</strong> for Packt Publishing.
+      </p>
+      <div class="tag-row">
+        <span class="tag">Distributed Systems</span>
+        <span class="tag">AI / ML</span>
+        <span class="tag">Ads Engineering</span>
+        <span class="tag">Backend Infrastructure</span>
+        <span class="tag">Cloud Platforms</span>
+        <span class="tag">Technical Author</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section id="experience">
+  <p class="section-label">02 — Experience</p>
+  <h2 class="section-title">Where I've<br><em>Built Things</em></h2>
+  <div class="timeline">
+
+    <div class="timeline-item">
+      <div class="timeline-dot current"></div>
+      <div class="timeline-meta">
+        <span class="timeline-company">Meta</span>
+        <span class="timeline-period">Oct 2023 — Present</span>
+      </div>
+      <p class="timeline-role">Software Engineering Lead</p>
+      <p class="timeline-location">Seattle, Washington</p>
+      <p class="timeline-desc">
+        Leading backend engineering for Facebook Ads and the broader Ads Ecosystem. Working at the intersection of machine learning, monetization, and large-scale distributed systems that power advertising for billions of users globally.
+      </p>
+      <div class="timeline-tags">
+        <span class="t-tag">Backend</span>
+        <span class="t-tag">Facebook Ads</span>
+        <span class="t-tag">ML / AI</span>
+        <span class="t-tag">Monetization</span>
+        <span class="t-tag">Distributed Systems</span>
+      </div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-dot"></div>
+      <div class="timeline-meta">
+        <span class="timeline-company">Google</span>
+        <span class="timeline-period">Jun 2019 — Oct 2023</span>
+      </div>
+      <p class="timeline-role">Software Engineering Team Lead</p>
+      <p class="timeline-location">San Francisco Bay Area</p>
+      <p class="timeline-desc">
+        Led an engineering team on Fuchsia — Google's next-generation, capability-based operating system. Worked across OS frameworks, UI layers, and platform infrastructure targeting the next billion users.
+      </p>
+      <div class="timeline-tags">
+        <span class="t-tag">Fuchsia OS</span>
+        <span class="t-tag">Platform Engineering</span>
+        <span class="t-tag">Team Lead</span>
+        <span class="t-tag">Systems</span>
+      </div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-dot"></div>
+      <div class="timeline-meta">
+        <span class="timeline-company">PayPal</span>
+        <span class="timeline-period">May 2018 — Jun 2019</span>
+      </div>
+      <p class="timeline-role">Software Engineer</p>
+      <p class="timeline-location">Scottsdale, Arizona</p>
+      <p class="timeline-desc">
+        Designed and built a full-stack web application for PayPal's SRE organization to track product changes and generate change records. Implemented SSO with 2FA, CI/CD pipelines, and microservices architecture.
+      </p>
+      <div class="timeline-tags">
+        <span class="t-tag">Python</span>
+        <span class="t-tag">Node.js</span>
+        <span class="t-tag">Angular</span>
+        <span class="t-tag">Java</span>
+        <span class="t-tag">MongoDB</span>
+        <span class="t-tag">Jenkins</span>
+      </div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-dot"></div>
+      <div class="timeline-meta">
+        <span class="timeline-company">Symantec</span>
+        <span class="timeline-period">Jun 2015 — Jul 2017</span>
+      </div>
+      <p class="timeline-role">Senior Software Development Engineer</p>
+      <p class="timeline-location">Chennai, India</p>
+      <p class="timeline-desc">
+        Full-stack product developer on Norton consumer security products within an Agile Scrum team at Symantec's Norton Engineering Centre.
+      </p>
+      <div class="timeline-tags">
+        <span class="t-tag">C# .NET</span>
+        <span class="t-tag">React</span>
+        <span class="t-tag">Python</span>
+        <span class="t-tag">Java</span>
+        <span class="t-tag">Cassandra</span>
+        <span class="t-tag">REST APIs</span>
+      </div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-dot"></div>
+      <div class="timeline-meta">
+        <span class="timeline-company">ASU</span>
+        <span class="timeline-period">Nov 2017 — Aug 2018</span>
+      </div>
+      <p class="timeline-role">Business Intelligence Developer</p>
+      <p class="timeline-location">Phoenix, Arizona</p>
+      <p class="timeline-desc">
+        Built BI dashboards and data pipelines for the Ira A. Fulton Schools of Engineering's Enterprise Analytics and Data Services group.
+      </p>
+      <div class="timeline-tags">
+        <span class="t-tag">C# .NET</span>
+        <span class="t-tag">Python</span>
+        <span class="t-tag">Splunk</span>
+        <span class="t-tag">Tableau</span>
+        <span class="t-tag">MS BI Suite</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+  <p class="section-label">03 — Skills</p>
+  <h2 class="section-title">Technical<br><em>Expertise</em></h2>
+  <div class="skills-grid">
+    <div class="skill-cell">
+      <div class="skill-icon">⬡</div>
+      <div class="skill-name">Languages</div>
+      <div class="skill-items">C++<br>Python<br>Java<br>C# .NET<br>JavaScript / TypeScript</div>
+    </div>
+    <div class="skill-cell">
+      <div class="skill-icon">◈</div>
+      <div class="skill-name">Distributed Systems</div>
+      <div class="skill-items">Large-scale Backend<br>Capacity Planning<br>Reliability Engineering<br>Microservices<br>Event-driven Architecture</div>
+    </div>
+    <div class="skill-cell">
+      <div class="skill-icon">◉</div>
+      <div class="skill-name">AI / Machine Learning</div>
+      <div class="skill-items">ML Infrastructure<br>Predictive Analytics<br>Sentiment Analysis<br>Topic Mining<br>Health Sensor Data</div>
+    </div>
+    <div class="skill-cell">
+      <div class="skill-icon">▣</div>
+      <div class="skill-name">Databases</div>
+      <div class="skill-items">Cassandra<br>MongoDB<br>PostgreSQL / MySQL<br>DynamoDB<br>SQL Server</div>
+    </div>
+    <div class="skill-cell">
+      <div class="skill-icon">◇</div>
+      <div class="skill-name">Cloud & Infrastructure</div>
+      <div class="skill-items">Google Cloud Platform<br>AWS<br>Jenkins CI/CD<br>Splunk<br>Docker / Kubernetes</div>
+    </div>
+    <div class="skill-cell">
+      <div class="skill-icon">⬡</div>
+      <div class="skill-name">Frameworks & Tools</div>
+      <div class="skill-items">React<br>Node.js / Express<br>Spring Boot<br>Angular<br>Tableau</div>
+    </div>
+  </div>
+</section>
+
+<!-- PATENTS -->
+<section id="patents">
+  <p class="section-label">04 — IP & Research</p>
+  <h2 class="section-title">Patents &<br><em>Publications</em></h2>
+  <div class="patents-grid">
+    <div class="patent-card" style="grid-column: 1 / -1;">
+      <div class="patent-type">US Patent · US10109171B1</div>
+      <div class="patent-title">Machine Learning and Predictive Analytics in Health Monitoring & Parental Controls</div>
+      <div class="patent-desc">
+        Improved parental control, cyberbullying, and drug use detection by mapping health sensor data and micro-expression sensing to sentiment analysis and topic mining of viewed social media posts.
+      </div>
+      <a href="https://patents.google.com/patent/US10109171B1" target="_blank" class="patent-link">
+        View on Google Patents →
+      </a>
+    </div>
+    <div class="patent-card">
+      <div class="patent-type">Patent</div>
+      <div class="patent-title">Systems and Methods for Digitally Verified Graphical Elements</div>
+      <div class="patent-desc">Novel approach to digital asset verification and integrity assurance in graphical system interfaces.</div>
+    </div>
+    <div class="patent-card">
+      <div class="patent-type">Publication</div>
+      <div class="patent-title">Automated Travel Sharing Feature for a Social Media Platform</div>
+      <div class="patent-desc">Defensive publication describing automated context-aware travel content sharing within social platforms.</div>
+    </div>
+    <div class="patent-card">
+      <div class="patent-type">Publication</div>
+      <div class="patent-title">Social Activity Planning — In Meta Platforms</div>
+      <div class="patent-desc">System design and implementation of coordinated social activity discovery and planning features.</div>
+    </div>
+    <div class="patent-card">
+      <div class="patent-type">Publication</div>
+      <div class="patent-title">A Social Media Platform Shopping Mode</div>
+      <div class="patent-desc">Architectural and UX framework for a dedicated commerce and shopping experience within social media.</div>
+    </div>
+    <div class="patent-card">
+      <div class="patent-type">Research Paper</div>
+      <div class="patent-title">Enhancing Privacy Preservation for Academic Management System (EPPAMS) in Cloud</div>
+      <div class="patent-desc">Research on secure cloud-based academic management systems with robust privacy-preserving mechanisms.</div>
+    </div>
+  </div>
+</section>
+
+<!-- EDUCATION -->
+<section id="education">
+  <p class="section-label">05 — Education</p>
+  <h2 class="section-title">Academic<br><em>Foundation</em></h2>
+  <div class="edu-grid">
+    <div class="edu-card">
+      <div class="edu-degree">Master of Science</div>
+      <div class="edu-school">Arizona State University</div>
+      <div class="edu-field">Computer Science · Ira A. Fulton Schools of Engineering</div>
+    </div>
+    <div class="edu-card">
+      <div class="edu-degree">Bachelor of Technology</div>
+      <div class="edu-school">Anna University, Chennai</div>
+      <div class="edu-field">Information Technology</div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <p class="section-label">06 — Contact</p>
+  <h2 class="section-title">Let's<br><em>Connect</em></h2>
+  <p>Open to interesting conversations, collaborations, and technical discussions.</p>
+  <div class="contact-links">
+    <a href="mailto:marunkarthick1@gmail.com" class="contact-link">
+      <svg viewBox="0 0 24 24" stroke-width="1.5"><path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+      marunkarthick1@gmail.com
+    </a>
+    <a href="https://www.linkedin.com/in/arunmanickam" target="_blank" class="contact-link">
+      <svg viewBox="0 0 24 24" stroke-width="1.5"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg>
+      LinkedIn
+    </a>
+    <a href="https://github.com/arunkarthickm" target="_blank" class="contact-link">
+      <svg viewBox="0 0 24 24" stroke-width="1.5"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 00-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0020 4.77 5.07 5.07 0 0019.91 1S18.73.65 16 2.48a13.38 13.38 0 00-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 005 4.77a5.44 5.44 0 00-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 009 18.13V22"/></svg>
+      GitHub
+    </a>
+    <a href="tel:4255536100" class="contact-link">
+      <svg viewBox="0 0 24 24" stroke-width="1.5"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.0 1.18 2 2 0 012 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 14.92z"/></svg>
+      (425) 553-6100
+    </a>
+  </div>
+</section>
+
+<footer>
+  <p>© 2025 Arun Karthick Manickam</p>
+  <p>Engineering @ Meta · Seattle, WA</p>
+</footer>
+
+<script>
+  // Custom cursor
+  const dot = document.getElementById('cursorDot');
+  const ring = document.getElementById('cursorRing');
+  let mouseX = 0, mouseY = 0, ringX = 0, ringY = 0;
+
+  document.addEventListener('mousemove', e => {
+    mouseX = e.clientX; mouseY = e.clientY;
+    dot.style.left = mouseX + 'px';
+    dot.style.top = mouseY + 'px';
+  });
+
+  function animateRing() {
+    ringX += (mouseX - ringX) * 0.12;
+    ringY += (mouseY - ringY) * 0.12;
+    ring.style.left = ringX + 'px';
+    ring.style.top = ringY + 'px';
+    requestAnimationFrame(animateRing);
+  }
+  animateRing();
+
+  // Scroll-based timeline reveal
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) e.target.classList.add('visible');
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.timeline-item').forEach(el => observer.observe(el));
+
+  // Nav scroll effect
+  const nav = document.querySelector('nav');
+  window.addEventListener('scroll', () => {
+    nav.style.background = window.scrollY > 60
+      ? 'rgba(10,10,15,0.97)'
+      : 'linear-gradient(to bottom, rgba(10,10,15,0.98), transparent)';
+  });
+</script>
 </body>
-
 </html>
-
-
